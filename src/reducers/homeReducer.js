@@ -5,8 +5,8 @@ export const homeReducer = (state, action) => {
 		case "FETCH_DATA_SUCCESS":
 			return {
 				...state,
-				data:[...state.data, ...action.payload.results],
-				// filteredData:[...state.filteredData,...action.payload.messages],
+				data:[...action.payload.results],
+				filteredData:[...state.filteredData,...action.payload.results],
 				nextPageToken: action.payload.next,
 				isSearchResultNotFound: false,
 				isLoading:false
