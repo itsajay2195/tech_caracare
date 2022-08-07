@@ -77,21 +77,21 @@ const Home = () => {
 							// The purpose of user useRef in the below line is to make sure that react keep tracks of the
 							// value and doesn't lose the initial value as it renders
 							// Also it remains the same during the lifecycle
-							// const inputRange = [
-							// 	-10,
-							// 	0,
-							// 	ITEM_SIZE * index,
-							// 	ITEM_SIZE * (index +2),
-							// ];
+							const inputRange = [
+								-1,
+								0,
+								ITEM_SIZE * index,
+								ITEM_SIZE * (index +2),
+							];
 							// when the range is between -1 to 0, the scale is going to remain the same
 							// beyond -1 it says the same
 							// when at 0 and item is at edge the animatin starts
 							// the animation stops when reaches the item size
 
-							// const scale = scrollY.interpolate({
-							// 	inputRange,
-							// 	outputRange: [1, 1, 1, 0],
-							// });
+							const scale = scrollY.interpolate({
+								inputRange,
+								outputRange: [1, 1,1, 0],
+							});
 
               // const opacityInputRange = [
 							// 	-1,
@@ -120,7 +120,7 @@ const Home = () => {
 										},
 										shadowOpacity: 0.3,
 										shadowRadius: 20,
-										// transform: [{ scale }],
+										transform: [{ scale }],
                     // opacity:opacity
 									}}
 								>
