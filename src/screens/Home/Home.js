@@ -30,8 +30,8 @@ const Home = () => {
 	const [nextPage, setNextPage] = useState(null);
 
 	const loadMore = useCallback(() => {
-		setNextPage(state.nextPageToken);
-	}, [nextPage]);
+		setNextPage(state.nextPageToken.split('=')[1]);
+	}, [state.nextPageToken]);
 
 	useEffect(() => {
 		if (nextPage !== null) {
@@ -41,13 +41,14 @@ const Home = () => {
 
 	const getData = useCallback((nextPageToken = "") => {
 		dispatch({ type: "FETCH_DATA" });
-		apiCall("https://rickandmortyapi.com/api/character")
+		apiCall(`https://rickandmortyapi.com/api/character?page=${nextPageToken}`)
 			.then((res) => res.json())
 			.then((json) => dispatch({ type: "FETCH_DATA_SUCCESS", payload: json }))
 			.catch((err) => Alert.alert("Error", "Something went wrong"));
-	}, []);
+	}, [nextPage]);
 
 	useEffect(() => {
+
 		getData();
 	}, []);
 	const scrollY = React.useRef(new Animated.Value(0)).current;
@@ -61,7 +62,8 @@ const Home = () => {
 				/>
 				<View style={{flex:1}}>
 					<Animated.FlatList
-						data={state.data}
+						data={state.filteredData}
+            onEndReached={loadMore}
 						onScroll={Animated.event(
 							[{ nativeEvent: { contentOffset: { y: scrollY } } }],
 							{ useNativeDriver: true }
@@ -75,33 +77,33 @@ const Home = () => {
 							// The purpose of user useRef in the below line is to make sure that react keep tracks of the
 							// value and doesn't lose the initial value as it renders
 							// Also it remains the same during the lifecycle
-							const inputRange = [
-								-1,
-								0,
-								ITEM_SIZE * index,
-								ITEM_SIZE * (index +2),
-							];
+							// const inputRange = [
+							// 	-10,
+							// 	0,
+							// 	ITEM_SIZE * index,
+							// 	ITEM_SIZE * (index +2),
+							// ];
 							// when the range is between -1 to 0, the scale is going to remain the same
 							// beyond -1 it says the same
 							// when at 0 and item is at edge the animatin starts
 							// the animation stops when reaches the item size
 
-							const scale = scrollY.interpolate({
-								inputRange,
-								outputRange: [1, 1, 1, 0],
-							});
+							// const scale = scrollY.interpolate({
+							// 	inputRange,
+							// 	outputRange: [1, 1, 1, 0],
+							// });
 
-              const opacityInputRange = [
-								-1,
-								0,
-								ITEM_SIZE * index,
-								ITEM_SIZE * (index + 1),
-							];
+              // const opacityInputRange = [
+							// 	-1,
+							// 	0,
+							// 	ITEM_SIZE * index,
+							// 	ITEM_SIZE * (index + 2),
+							// ];
 
-              const opacity = scrollY.interpolate({
-								inputRange:opacityInputRange,
-								outputRange: [1, 1, 1, 0],
-							});
+              // const opacity = scrollY.interpolate({
+							// 	inputRange:opacityInputRange,
+							// 	outputRange: [1, 1, 1, 0],
+							// });
 
 							return (
 								<Animated.View
@@ -118,8 +120,8 @@ const Home = () => {
 										},
 										shadowOpacity: 0.3,
 										shadowRadius: 20,
-										transform: [{ scale }],
-                    opacity:opacity
+										// transform: [{ scale }],
+                    // opacity:opacity
 									}}
 								>
 									<Text>{item.id}</Text>
