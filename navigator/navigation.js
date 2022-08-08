@@ -22,6 +22,7 @@ export default function RootNavigation() {
 					initialRouteName="Home"
 					screenOptions={({ route }) => ({
 						headerShown: true,
+						headerStyle:{backgroundColor: 'rgb(72, 159, 157)'},
             tabBarActiveTintColor:'#FFFFFF',
             tabBarInactiveTintColor:'#3A4A4A',
 						tabBarStyle: {
