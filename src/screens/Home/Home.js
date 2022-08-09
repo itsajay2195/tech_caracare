@@ -53,7 +53,7 @@ const Home = ({ navigation }) => {
 
 	useLayoutEffect(() => {
 		navigation.setOptions({
-			title: '',
+			title: 'Home',
 		});
 	}, [navigation]);
 
