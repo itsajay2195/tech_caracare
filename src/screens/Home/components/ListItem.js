@@ -27,7 +27,7 @@ const ListItem = ({ item, gridView }) => {
 	const collapseView = useCallback(() => {
 		Animated.timing(animationHeight, {
 			duration: 100,
-			toValue: gridView ? 200 :120,
+			toValue: gridView ? 200 : 120,
 			useNativeDriver: false,
 		}).start();
 	}, [animationHeight]);
@@ -36,7 +36,7 @@ const ListItem = ({ item, gridView }) => {
 		// setMaxLines(null);
 		Animated.timing(animationHeight, {
 			duration: 100,
-			toValue: gridView ? 250 : 189,
+			toValue: gridView ? 250 : 200,
 			useNativeDriver: false,
 		}).start();
 	}, [animationHeight]);
@@ -75,7 +75,7 @@ const ListItem = ({ item, gridView }) => {
 								height: 20,
 								width: 20,
 							}}
-							source={require("../../../assets/like-icnon.png")}
+							source={require("../../../assets/icons/like-icnon.png")}
 						/>
 					</TouchableOpacity>
 					<View style={{ flex: 1, alignItems: "center" }}>
@@ -116,18 +116,17 @@ const ListItem = ({ item, gridView }) => {
 							{item.origin.name}
 						</Text>
 					</View>
-				
-						<LottieView
-							style={{
-								height: 20,
-								alignSelf: "center",
-							}}
-							loop={true}
-							speed={0.5}
-							source={require("../../../assets/animations/down-arrow.json")}
-							autoPlay={true}
-						/>
-				
+
+					<LottieView
+						style={{
+							height: 20,
+							alignSelf: "center",
+						}}
+						loop={true}
+						speed={0.5}
+						source={require("../../../assets/animations/down-arrow.json")}
+						autoPlay={true}
+					/>
 				</Animated.View>
 			) : (
 				<Animated.View
@@ -181,29 +180,42 @@ const ListItem = ({ item, gridView }) => {
 									height: gridView ? 20 : 30,
 									width: gridView ? 20 : 30,
 								}}
-								source={require("../../../assets/like-icnon.png")}
+								source={require("../../../assets/icons/like-icnon.png")}
 							/>
 						</TouchableOpacity>
 					</View>
 
 					{!collapsed && (
-						<View style={{justifyContent:'center',alignItems:'center'}}>
+						<View style={{ justifyContent: "center", alignItems: "center" }}>
 							<Text
 								numberOfLines={gridView ? 1 : null}
 								style={{ fontSize: gridView ? 12 : 18, opacity: 0.7 }}
 							>
+								<Text style={{ fontWeight: "bold" }}>Status:</Text>{" "}
 								{item.status}
 							</Text>
+
 							<Text
-								numberOfLines={1}
-								style={{
-									fontSize: gridView ? 10 : 14,
-									opacity: 0.8,
-									color: "#0099cc",
-								}}
+								numberOfLines={gridView ? 1 : null}
+								style={{ fontSize: gridView ? 12 : 18, opacity: 0.7 }}
 							>
-								{item.origin.name}
+								<Text style={{ fontWeight: "bold" }}>Species:</Text>{" "}
+								{item.species}
 							</Text>
+							<View style={{ flexDirection: "row" ,justifyContent:'space-around', alignItems:'center'}}>
+								<Image style={{tintColor:'red', height:20, width:20}} source={require('../../../assets/icons/location.png')}/>
+								<Text
+									numberOfLines={1}
+									style={{
+										fontSize: gridView ? 10 : 14,
+										opacity: 0.8,
+										color: "#0099cc",
+										
+									}}
+								>
+									{item.origin.name}
+								</Text>
+							</View>
 						</View>
 					)}
 

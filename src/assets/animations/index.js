@@ -15,13 +15,13 @@ export const CustomTab = ({ focused, color, size, route }) => {
 		case "Home":
 			filePath = {
 				0: require("../animations/home.json"),
-				1: require("../home.png"),
+				1: require("../icons/home.png"),
 			};
 		break;
         case "Favourites":
             filePath = {
                 0: require("../animations/favourites.json"),
-                1: require("../favourites.png"),
+                1: require("../icons/favourites.png"),
             };
             
         break;
