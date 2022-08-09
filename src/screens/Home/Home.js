@@ -13,7 +13,7 @@ import React, {
 	useReducer,
 	useCallback,
 	useLayoutEffect,
-	useRef
+	useRef,
 } from "react";
 import { apiCall } from "../../services/moviesService";
 import { homeReducer } from "../../reducers/homeReducer";
@@ -22,13 +22,10 @@ import SwitchSelector from "./components/SwitchSelector";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import SearchBar from "./components/SearchBar";
 
-
 const BG_IMG =
 	"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQI085rp63b7TRPEmAzAaPnahzOU1A_l9FhXg&usqp=CAU";
 //this is item Size(card size)
 const SPACING = 20;
-const AVATAR_SIZE = 70;
-const ITEM_SIZE = AVATAR_SIZE + SPACING * 3;
 
 const Home = ({ navigation }) => {
 	const initialState = {
@@ -41,9 +38,10 @@ const Home = ({ navigation }) => {
 		isSearchResultNotFound: false,
 	};
 	const [state, dispatch] = useReducer(homeReducer, initialState);
-	const [searchText, setSearchText] = useState("");
+	const [searchText, setSearchText] = useState('');
 	const [nextPage, setNextPage] = useState(null);
 	const [gridView, setGridView] = useState(null);
+	const [favourites,setFavourites] = useState(null)
 
 	const loadMore = () => {
 		setNextPage(state.nextPageToken.split("=")[1]);
@@ -66,9 +64,7 @@ const Home = ({ navigation }) => {
 	};
 	const searchOperation = (text) => {
 		if (text.length > 0) {
-			const newData = state.data.filter((item) =>
-				item.name.includes(text)
-			);
+			const newData = state.data.filter((item) => item.name.includes(text));
 			newData.length > 0
 				? dispatch({ type: "SET_SEARCH_RESULTS", payload: newData })
 				: dispatch({ type: "NO_RESULTS_FOUND" });
@@ -97,6 +93,8 @@ const Home = ({ navigation }) => {
 				console.log("getUserViewPreference error");
 			}
 		};
+
+
 		getUserViewPreference();
 	}, []);
 
@@ -111,10 +109,36 @@ const Home = ({ navigation }) => {
 		[nextPage]
 	);
 
+	const getFavourites = async () => {
+		try {
+			const value = await AsyncStorage.getItem("favouritesList2");
+			console.warn('getfa',value)
+			if (value !== null) {
+				setFavourites(JSON.parse(value))
+				console.warn('get favourites success',value)
+			}else{
+				console.warn('it is actually null')
+				setFavourites([])
+			}
+		} catch (e) {
+			console.warn("getFavourites error",e);
+		}
+	};
+
+	const addToFavourites = async (value) => {
+		try {
+			setFavourites([...favourites,value])
+			console.warn(favourites)
+			await AsyncStorage.setItem("favouritesList2",JSON.stringify(favourites));
+		} catch (e) {
+			console.log("error addToFavourites",e);
+		}
+	}
+
 	useEffect(() => {
 		getData();
+		getFavourites()
 	}, []);
-
 
 	const changeView = useCallback(() => {
 		setGridView(!gridView);
@@ -126,12 +150,11 @@ const Home = ({ navigation }) => {
 	//Max Height of the Header
 	const Header_Minimum_Height = 0;
 
-	const animateHeaderHeight =
-    AnimatedHeaderValue.interpolate({
-      inputRange: [0, Header_Maximum_Height],
-      outputRange: [Header_Maximum_Height, Header_Minimum_Height],
-      extrapolate: 'clamp',
-    });
+	const animateHeaderHeight = AnimatedHeaderValue.interpolate({
+		inputRange: [0, Header_Maximum_Height],
+		outputRange: [Header_Maximum_Height, Header_Minimum_Height],
+		extrapolate: "clamp",
+	});
 
 
 	return (
@@ -139,25 +162,24 @@ const Home = ({ navigation }) => {
 			<View style={{ padding: SPACING - 15 }}>
 				<SwitchSelector gridView={gridView} onPress={changeView} />
 			</View>
-		
-			
-			<Animated.View style={{height:animateHeaderHeight}}>
-				<SearchBar  input={searchText} onChangeText={filterResults} />
+
+			<Animated.View style={{ height: animateHeaderHeight }}>
+				<SearchBar input={searchText} onChangeText={filterResults} />
 			</Animated.View>
 			{searchText.length > 0 && !state.isSearchResultNotFound > 0 && (
-					<View
-						style={{
-							flexDirection: "row",
-							justifyContent: "space-between",
-							paddingVertical: 20,
-						}}
-					>
-						<Text style={{ color: 'black' }}>Search Results</Text>
-						<Text style={{ color:'black' }}>
-							{state.filteredData.length} founds
-						</Text>
-					</View>
-				)}
+				<View
+					style={{
+						flexDirection: "row",
+						justifyContent: "space-between",
+						paddingVertical: 20,
+					}}
+				>
+					<Text style={{ color: "black" }}>Search Results</Text>
+					<Text style={{ color: "black" }}>
+						{state.filteredData.length} founds
+					</Text>
+				</View>
+			)}
 			<View style={{ flex: 1 }}>
 				<Image
 					source={{ uri: BG_IMG }}
@@ -166,45 +188,48 @@ const Home = ({ navigation }) => {
 				/>
 
 				<View style={{ flex: 1 }}>
-				{state.isSearchResultNotFound ? (
-						<Text style={{ color: 'red'}}> No results found</Text>
+					{state.isSearchResultNotFound ? (
+						<Text style={{ color: "red" }}> No results found</Text>
 					) : (
-					<Animated.FlatList
-						data={state.filteredData}
-						key={gridView ? 1 : 0}
-						numColumns={gridView ? 2 : 0}
-						onEndReached={()=> !searchText.length > 0 ? loadMore : null}
-						// onScroll={Animated.event(
-						// 	[{ nativeEvent: { contentOffset: { y: scrollY } } }],
-						// 	{ useNativeDriver: true }
-						// )}
-						onScroll={Animated.event(
-							[{
-							  nativeEvent: {
-								contentOffset: { y: AnimatedHeaderValue }
-							  }
-							}],
-							{ useNativeDriver: false }
-						  )}
-						keyExtractor={(item, index) => {
-							return item.id;
-						}}
-						contentContainerStyle={{
-							alignItems: "center",
-							justifyContent: "space-between",
-							paddingTop: 5,
-						}}
-						renderItem={({ item, index }) => {
-							return (
-								<>
-									{gridView && <View style={{ width: 3 }}></View>}
-									<ListItem item={item} gridView={gridView} />
-									{gridView && <View style={{ width: 3 }}></View>}
-								</>
-							);
-						}}
-						// columnWrapperStyle={{justifyContent: 'space-evenly' }}
-					/>)}
+						<Animated.FlatList
+							data={state.filteredData}
+							key={gridView ? 1 : 0}
+							numColumns={gridView ? 2 : 0}
+							onEndReached={() => !searchText && loadMore()}
+							// onScroll={Animated.event(
+							// 	[{ nativeEvent: { contentOffset: { y: scrollY } } }],
+							// 	{ useNativeDriver: true }
+							// )}
+							onScroll={Animated.event(
+								[
+									{
+										nativeEvent: {
+											contentOffset: { y: AnimatedHeaderValue },
+										},
+									},
+								],
+								{ useNativeDriver: false }
+							)}
+							keyExtractor={(item, index) => {
+								return item.id;
+							}}
+							contentContainerStyle={{
+								alignItems: "center",
+								justifyContent: "space-between",
+								paddingTop: 5,
+							}}
+							renderItem={({ item, index }) => {
+								return (
+									<>
+										{gridView && <View style={{ width: 3 }}></View>}
+										<ListItem item={item} gridView={gridView} setFavourites={addToFavourites}/>
+										{gridView && <View style={{ width: 3 }}></View>}
+									</>
+								);
+							}}
+							// columnWrapperStyle={{justifyContent: 'space-evenly' }}
+						/>
+					)}
 				</View>
 			</View>
 		</>
@@ -213,6 +238,4 @@ const Home = ({ navigation }) => {
 
 export default Home;
 
-const styles = StyleSheet.create({
-
-});
+const styles = StyleSheet.create({});

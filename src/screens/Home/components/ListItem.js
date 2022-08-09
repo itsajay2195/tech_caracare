@@ -16,10 +16,10 @@ const BG_IMG =
 	"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQI085rp63b7TRPEmAzAaPnahzOU1A_l9FhXg&usqp=CAU";
 const { height, width } = Dimensions.get("screen");
 
-const ListItem = ({ item, gridView }) => {
+const ListItem = ({ item, gridView,setFavourites, }) => {
 	const animationHeight = useRef(new Animated.Value(0)).current;
 	const [collapsed, setCollapsed] = useState(true);
-
+	let favourites = {}
 	const toggleCollapsed = () => {
 		setCollapsed(!collapsed);
 	};
@@ -48,6 +48,8 @@ const ListItem = ({ item, gridView }) => {
 			expandView();
 		}
 	}, [collapsed]);
+
+
 	return (
 		<>
 			{gridView ? (
@@ -69,7 +71,10 @@ const ListItem = ({ item, gridView }) => {
 						justifyContent: "center",
 					}}
 				>
-					<TouchableOpacity style={{ position: "absolute" }}>
+					<TouchableOpacity style={{ position: "absolute" }} onPress={()=>{
+						
+						setFavourites(item)
+						}}>
 						<Image
 							style={{
 								height: 20,
@@ -194,6 +199,9 @@ const ListItem = ({ item, gridView }) => {
 								justifyContent: "center",
 								alignItems: "center",
 							}}
+							onPress={()=>{
+								setFavourites(item)
+								}}
 						>
 							<Image
 								style={{
