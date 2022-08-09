@@ -78,7 +78,7 @@ const ListItem = ({ item, gridView }) => {
 							source={require("../../../assets/icons/like-icnon.png")}
 						/>
 					</TouchableOpacity>
-					<View style={{ flex: 1, alignItems: "center" }}>
+					<View style={{ height: AVATAR_SIZE, alignItems: "center" }}>
 						<Image
 							source={{ uri: item.image }}
 							style={{
@@ -91,18 +91,32 @@ const ListItem = ({ item, gridView }) => {
 					</View>
 
 					<View
-						style={{ flex: 2, justifyContent: "center", alignItems: "center" }}
+						style={{ justifyContent: "center", alignItems: "center" }}
 					>
+							<Text
+								numberOfLines={1}
+								style={{paddingTop: 10, fontSize: gridView ? 14 : 22, fontWeight: "700" }}
+							>
+								{item.name}
+							</Text>
 						<Text
 							numberOfLines={gridView ? 1 : null}
-							style={{ paddingTop:10,fontSize: gridView ? 12 : 18, opacity: 0.7 }}
+							style={{
+								paddingTop: 10,
+								fontSize: gridView ? 12 : 18,
+								opacity: 0.7,
+							}}
 						>
 							<Text style={{ fontWeight: "bold" }}>Status:</Text> {item.status}
 						</Text>
 
 						<Text
 							numberOfLines={gridView ? 1 : null}
-							style={{paddingTop:10, fontSize: gridView ? 12 : 18, opacity: 0.7 }}
+							style={{
+								paddingTop: 10,
+								fontSize: gridView ? 12 : 18,
+								opacity: 0.7,
+							}}
 						>
 							<Text style={{ fontWeight: "bold" }}>Species:</Text>{" "}
 							{item.species}
@@ -112,7 +126,7 @@ const ListItem = ({ item, gridView }) => {
 								flexDirection: "row",
 								justifyContent: "space-around",
 								alignItems: "center",
-								paddingTop:10
+								paddingTop: 10,
 							}}
 						>
 							<Image
@@ -127,7 +141,9 @@ const ListItem = ({ item, gridView }) => {
 									color: "#0099cc",
 								}}
 							>
-								{item.origin.name.includes('(')? item.origin.name.split('(')[0] : item.origin.name}
+								{item.origin.name.includes("(")
+									? item.origin.name.split("(")[0]
+									: item.origin.name}
 							</Text>
 						</View>
 					</View>
@@ -225,7 +241,9 @@ const ListItem = ({ item, gridView }) => {
 										color: "#0099cc",
 									}}
 								>
-									{item.origin.name.includes('(')? item.origin.name.split('(')[0] : item.origin.name}
+									{item.origin.name.includes("(")
+										? item.origin.name.split("(")[0]
+										: item.origin.name}
 								</Text>
 							</View>
 						</View>

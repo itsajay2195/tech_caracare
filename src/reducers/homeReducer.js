@@ -13,14 +13,6 @@ export const homeReducer = (state, action) => {
 			};
 		case "FETCH_DATA_FAILURE":
 			return { ...state, isError: true };
-		case "DELETE_ITEM":
-			return {
-				...state,
-				data:action.payload,
-				filteredData: action.payload,
-				isError: false,
-				isSearchResultNotFound: false,
-			};
 		case "SET_SEARCH_RESULTS":
 			return {
 				...state,

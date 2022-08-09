@@ -5,7 +5,6 @@ import {
 	Alert,
 	Image,
 	Animated,
-	Switch,
 	TouchableOpacity,
 } from "react-native";
 import React, {
@@ -20,6 +19,8 @@ import { homeReducer } from "../../reducers/homeReducer";
 import ListItem from "./components/ListItem";
 import SwitchSelector from "./components/SwitchSelector";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import SearchBar from "./components/SearchBar";
+
 
 const BG_IMG =
 	"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQI085rp63b7TRPEmAzAaPnahzOU1A_l9FhXg&usqp=CAU";
@@ -42,19 +43,38 @@ const Home = ({ navigation }) => {
 	const [searchText, setSearchText] = useState("");
 	const [nextPage, setNextPage] = useState(null);
 	const [gridView, setGridView] = useState(null);
-	const loadMore = useCallback(() => {
-		setNextPage(state.nextPageToken.split("=")[1]);
-	}, [state.nextPageToken]);
 
-	const storeUserViewPreference = useCallback(async (value)=>{
-	
+	const loadMore = () => {
+		setNextPage(state.nextPageToken.split("=")[1]);
+	};
+
+	const storeUserViewPreference = useCallback(
+		async (value) => {
 			try {
-			  await AsyncStorage.setItem('gridView', JSON.stringify(value))
+				await AsyncStorage.setItem("gridView", JSON.stringify(value));
 			} catch (e) {
-			  console.warn('error')
+				console.warn("error");
 			}
-		  
-	},[gridView])
+		},
+		[gridView]
+	);
+
+	const filterResults = (text) => {
+		setSearchText(text);
+		searchOperation(text);
+	};
+	const searchOperation = (text) => {
+		if (text.length > 0) {
+			const newData = state.data.filter((item) =>
+				item.name.includes(text)
+			);
+			newData.length > 0
+				? dispatch({ type: "SET_SEARCH_RESULTS", payload: newData })
+				: dispatch({ type: "NO_RESULTS_FOUND" });
+		} else {
+			dispatch({ type: "SET_SEARCH_RESULTS", payload: state.data });
+		}
+	};
 
 	useEffect(() => {
 		if (nextPage !== null) {
@@ -64,21 +84,20 @@ const Home = ({ navigation }) => {
 
 	useLayoutEffect(() => {
 		navigation.setOptions({
-			title: 'Home',
+			title: "Home",
 		});
-		getUserViewPreference()
+		const getUserViewPreference = async () => {
+			try {
+				const value = await AsyncStorage.getItem("gridView");
+				if (value !== null) {
+					setGridView(JSON.parse(value));
+				}
+			} catch (e) {
+				console.log("getUserViewPreference error");
+			}
+		};
+		getUserViewPreference();
 	}, []);
-
-	const getUserViewPreference = async () => {
-		try {
-		  const value = await AsyncStorage.getItem('gridView')
-		  if(value !== null) {
-			setGridView(JSON.parse(value))
-		  }
-		} catch(e) {
-			console.log('getUserViewPreference error')
-		}
-	  }
 
 	const getData = useCallback(
 		(nextPageToken = "") => {
@@ -95,35 +114,50 @@ const Home = ({ navigation }) => {
 		getData();
 	}, []);
 
-	const changeView= useCallback(()=>{
-		setGridView(!gridView)
-		storeUserViewPreference(!gridView)
-
-	},[gridView])
-
+	const changeView = useCallback(() => {
+		setGridView(!gridView);
+		storeUserViewPreference(!gridView);
+	}, [gridView]);
 
 	const scrollY = React.useRef(new Animated.Value(0)).current;
 	return (
 		<>
-		<View style={{padding:SPACING -15,}}>
-			<SwitchSelector gridView={gridView} onPress={changeView}/>
-		</View>
-	
+			<View style={{ padding: SPACING - 15 }}>
+				<SwitchSelector gridView={gridView} onPress={changeView} />
+			</View>
+			<View style={styles.searchBarWrapper}>
+				<SearchBar input={searchText} onChangeText={filterResults} />
+			</View>
+			{searchText.length > 0 && !state.isSearchResultNotFound > 0 && (
+					<View
+						style={{
+							flexDirection: "row",
+							justifyContent: "space-between",
+							paddingVertical: 20,
+						}}
+					>
+						<Text style={{ color: 'black' }}>Search Results</Text>
+						<Text style={{ color:'black' }}>
+							{state.filteredData.length} founds
+						</Text>
+					</View>
+				)}
 			<View style={{ flex: 1 }}>
-				
 				<Image
 					source={{ uri: BG_IMG }}
 					style={StyleSheet.absoluteFillObject}
 					blurRadius={0}
 				/>
-				
 
-				<View style={{ flex: 1}}>
+				<View style={{ flex: 1 }}>
+				{state.isSearchResultNotFound ? (
+						<Text style={{ color: 'red'}}> No results found</Text>
+					) : (
 					<Animated.FlatList
 						data={state.filteredData}
 						key={gridView ? 1 : 0}
 						numColumns={gridView ? 2 : 0}
-						onEndReached={loadMore}
+						onEndReached={()=> !searchText.length > 0 ? loadMore : null}
 						onScroll={Animated.event(
 							[{ nativeEvent: { contentOffset: { y: scrollY } } }],
 							{ useNativeDriver: true }
@@ -134,7 +168,7 @@ const Home = ({ navigation }) => {
 						contentContainerStyle={{
 							alignItems: "center",
 							justifyContent: "space-between",
-							paddingTop:5
+							paddingTop: 5,
 						}}
 						renderItem={({ item, index }) => {
 							return (
@@ -146,7 +180,7 @@ const Home = ({ navigation }) => {
 							);
 						}}
 						// columnWrapperStyle={{justifyContent: 'space-evenly' }}
-					/>
+					/>)}
 				</View>
 			</View>
 		</>
@@ -155,4 +189,8 @@ const Home = ({ navigation }) => {
 
 export default Home;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+	searchBarWrapper: {
+		paddingVertical: 20,
+	},
+});
