@@ -25,9 +25,14 @@ export const CustomTab = ({ focused, color, size, route }) => {
             };
             
         break;
+		case "Down-Arrow":
+			filePath = {
+                0: require("../animations/down-arrow.json"),
+            };
+		break;
 	}
 
-	if (!focused) {
+	if (!focused  ) {
 		return (
 			<Image
 				style={{ tintColor:'gray',height: 30, width: 30, alignSelf: "center" }}

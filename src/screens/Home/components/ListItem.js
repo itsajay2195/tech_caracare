@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import React, { useRef, useState, useCallback, useEffect } from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import LottieView from "lottie-react-native";
 
 const SPACING = 20;
 const AVATAR_SIZE = 70;
@@ -26,7 +27,7 @@ const ListItem = ({ item, gridView }) => {
 	const collapseView = useCallback(() => {
 		Animated.timing(animationHeight, {
 			duration: 100,
-			toValue: 72,
+			toValue: gridView ? 200 :120,
 			useNativeDriver: false,
 		}).start();
 	}, [animationHeight]);
@@ -35,7 +36,7 @@ const ListItem = ({ item, gridView }) => {
 		// setMaxLines(null);
 		Animated.timing(animationHeight, {
 			duration: 100,
-			toValue: 189,
+			toValue: gridView ? 250 : 189,
 			useNativeDriver: false,
 		}).start();
 	}, [animationHeight]);
@@ -45,7 +46,6 @@ const ListItem = ({ item, gridView }) => {
 			collapseView();
 		} else {
 			expandView();
-			inputRef.current.focus();
 		}
 	}, [collapsed]);
 	return (
@@ -116,13 +116,25 @@ const ListItem = ({ item, gridView }) => {
 							{item.origin.name}
 						</Text>
 					</View>
+				
+						<LottieView
+							style={{
+								height: 20,
+								alignSelf: "center",
+							}}
+							loop={true}
+							speed={0.5}
+							source={require("../../../assets/animations/down-arrow.json")}
+							autoPlay={true}
+						/>
+				
 				</Animated.View>
 			) : (
 				<Animated.View
 					style={{
-						flexDirection: "row",
 						padding: gridView ? SPACING : SPACING,
 						width: gridView ? (width - SPACING) / 2 : width - SPACING,
+						height: animationHeight,
 						marginBottom: SPACING,
 						shadowColor: "#000",
 						backgroundColor: "white",
@@ -136,46 +148,75 @@ const ListItem = ({ item, gridView }) => {
 						shadowRadius: 20,
 					}}
 				>
-					<View style={{ flex: 1 }}>
-						<Image
-							source={{ uri: item.image }}
+					<View style={{ flexDirection: "row", alignItems: "center" }}>
+						<View style={{ flex: 1 }}>
+							<Image
+								source={{ uri: item.image }}
+								style={{
+									width: gridView ? AVATAR_SIZE / 2 : AVATAR_SIZE,
+									height: gridView ? AVATAR_SIZE / 2 : AVATAR_SIZE,
+									borderRadius: gridView ? AVATAR_SIZE / 2 : AVATAR_SIZE,
+									marginRight: gridView ? SPACING / 2 : SPACING,
+								}}
+							/>
+						</View>
+
+						<View style={{ flex: 2, paddingLeft: gridView ? 5 : 10 }}>
+							<Text
+								numberOfLines={1}
+								style={{ fontSize: gridView ? 14 : 22, fontWeight: "700" }}
+							>
+								{item.name}
+							</Text>
+						</View>
+						<TouchableOpacity
 							style={{
-								width: gridView ? AVATAR_SIZE / 2 : AVATAR_SIZE,
-								height: gridView ? AVATAR_SIZE / 2 : AVATAR_SIZE,
-								borderRadius: gridView ? AVATAR_SIZE / 2 : AVATAR_SIZE,
-								marginRight: gridView ? SPACING / 2 : SPACING,
+								flex: 1,
+								justifyContent: "center",
+								alignItems: "center",
 							}}
-						/>
+						>
+							<Image
+								style={{
+									height: gridView ? 20 : 30,
+									width: gridView ? 20 : 30,
+								}}
+								source={require("../../../assets/like-icnon.png")}
+							/>
+						</TouchableOpacity>
 					</View>
 
-					<View style={{ flex: 2, paddingLeft: gridView ? 5 : 10 }}>
-						<Text
-							numberOfLines={1}
-							style={{ fontSize: gridView ? 14 : 22, fontWeight: "700" }}
-						>
-							{item.name}
-						</Text>
-						<Text
-							numberOfLines={gridView ? 1 : null}
-							style={{ fontSize: gridView ? 12 : 18, opacity: 0.7 }}
-						>
-							{item.status}
-						</Text>
-						<Text
-							numberOfLines={gridView ? 1 : null}
+					{!collapsed && (
+						<View style={{justifyContent:'center',alignItems:'center'}}>
+							<Text
+								numberOfLines={gridView ? 1 : null}
+								style={{ fontSize: gridView ? 12 : 18, opacity: 0.7 }}
+							>
+								{item.status}
+							</Text>
+							<Text
+								numberOfLines={1}
+								style={{
+									fontSize: gridView ? 10 : 14,
+									opacity: 0.8,
+									color: "#0099cc",
+								}}
+							>
+								{item.origin.name}
+							</Text>
+						</View>
+					)}
+
+					<TouchableOpacity onPress={() => toggleCollapsed()}>
+						<LottieView
 							style={{
-								fontSize: gridView ? 10 : 14,
-								opacity: 0.8,
-								color: "#0099cc",
+								height: 25,
+								alignSelf: "center",
 							}}
-						>
-							{item.origin.name}
-						</Text>
-					</View>
-					<TouchableOpacity style={{ flex: 1 }}>
-						<Image
-							style={{ height: gridView ? 20 : 30, width: gridView ? 20 : 30 }}
-							source={require("../../../assets/like-icnon.png")}
+							loop={true}
+							speed={0.5}
+							source={require("../../../assets/animations/down-arrow.json")}
+							autoPlay={true}
 						/>
 					</TouchableOpacity>
 				</Animated.View>
