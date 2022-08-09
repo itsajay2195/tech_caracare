@@ -13,6 +13,7 @@ import React, {
 	useReducer,
 	useCallback,
 	useLayoutEffect,
+	useRef
 } from "react";
 import { apiCall } from "../../services/moviesService";
 import { homeReducer } from "../../reducers/homeReducer";
@@ -53,7 +54,7 @@ const Home = ({ navigation }) => {
 			try {
 				await AsyncStorage.setItem("gridView", JSON.stringify(value));
 			} catch (e) {
-				console.warn("error");
+				console.log("error");
 			}
 		},
 		[gridView]
@@ -114,20 +115,35 @@ const Home = ({ navigation }) => {
 		getData();
 	}, []);
 
+
 	const changeView = useCallback(() => {
 		setGridView(!gridView);
 		storeUserViewPreference(!gridView);
 	}, [gridView]);
 
-	const scrollY = React.useRef(new Animated.Value(0)).current;
+	let AnimatedHeaderValue = new Animated.Value(0);
+	const Header_Maximum_Height = 40;
+	//Max Height of the Header
+	const Header_Minimum_Height = 0;
+
+	const animateHeaderHeight =
+    AnimatedHeaderValue.interpolate({
+      inputRange: [0, Header_Maximum_Height],
+      outputRange: [Header_Maximum_Height, Header_Minimum_Height],
+      extrapolate: 'clamp',
+    });
+
+
 	return (
 		<>
 			<View style={{ padding: SPACING - 15 }}>
 				<SwitchSelector gridView={gridView} onPress={changeView} />
 			</View>
-			<View style={styles.searchBarWrapper}>
-				<SearchBar input={searchText} onChangeText={filterResults} />
-			</View>
+		
+			
+			<Animated.View style={{height:animateHeaderHeight}}>
+				<SearchBar  input={searchText} onChangeText={filterResults} />
+			</Animated.View>
 			{searchText.length > 0 && !state.isSearchResultNotFound > 0 && (
 					<View
 						style={{
@@ -158,10 +174,18 @@ const Home = ({ navigation }) => {
 						key={gridView ? 1 : 0}
 						numColumns={gridView ? 2 : 0}
 						onEndReached={()=> !searchText.length > 0 ? loadMore : null}
+						// onScroll={Animated.event(
+						// 	[{ nativeEvent: { contentOffset: { y: scrollY } } }],
+						// 	{ useNativeDriver: true }
+						// )}
 						onScroll={Animated.event(
-							[{ nativeEvent: { contentOffset: { y: scrollY } } }],
-							{ useNativeDriver: true }
-						)}
+							[{
+							  nativeEvent: {
+								contentOffset: { y: AnimatedHeaderValue }
+							  }
+							}],
+							{ useNativeDriver: false }
+						  )}
 						keyExtractor={(item, index) => {
 							return item.id;
 						}}
@@ -190,7 +214,5 @@ const Home = ({ navigation }) => {
 export default Home;
 
 const styles = StyleSheet.create({
-	searchBarWrapper: {
-		paddingVertical: 20,
-	},
+
 });

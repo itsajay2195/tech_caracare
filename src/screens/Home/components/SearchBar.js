@@ -2,15 +2,16 @@ import {
 	StyleSheet,
 	Text,
 	View,
+    Animated,
 	TouchableOpacity,
 	TextInput,
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import React from "react";
 
-const SearchBar = ({ style, input, onChangeText }) => {
+const SearchBar = ({ style, input,onChangeText }) => {
 	return (
-		<View style={[styles.container, style]}>
+		<Animated.View style={styles.container}>
 			<TextInput
 				style={styles.textInput}
 				value={input}
@@ -21,7 +22,7 @@ const SearchBar = ({ style, input, onChangeText }) => {
 			<View style={{ justifyContent: "center", paddingHorizontal: 5 }}>
 				<Ionicons name="search" size={24} color={"grey"}></Ionicons>
 			</View>
-		</View>
+		</Animated.View>
 	);
 };
 
@@ -30,7 +31,6 @@ export default SearchBar;
 const styles = StyleSheet.create({
 	container: {
 		flexDirection: "row",
-		height: 40,
 		width: "100%",
 		backgroundColor: "#F5F5F5",
 		borderRadius: 10,
