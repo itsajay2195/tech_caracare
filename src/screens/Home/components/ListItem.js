@@ -54,7 +54,7 @@ const ListItem = ({ item, gridView }) => {
 				<Animated.View
 					style={{
 						padding: SPACING,
-						height: 200,
+						height: animationHeight,
 						width: gridView ? (width - SPACING) / 2 : width - SPACING,
 						marginBottom: SPACING,
 						shadowColor: "#000",
@@ -94,39 +94,43 @@ const ListItem = ({ item, gridView }) => {
 						style={{ flex: 2, justifyContent: "center", alignItems: "center" }}
 					>
 						<Text
-							numberOfLines={1}
-							style={{ fontSize: gridView ? 14 : 22, fontWeight: "700" }}
+							numberOfLines={gridView ? 1 : null}
+							style={{ paddingTop:10,fontSize: gridView ? 12 : 18, opacity: 0.7 }}
 						>
-							{item.name}
+							<Text style={{ fontWeight: "bold" }}>Status:</Text> {item.status}
 						</Text>
+
 						<Text
 							numberOfLines={gridView ? 1 : null}
-							style={{ fontSize: gridView ? 12 : 18, opacity: 0.7 }}
+							style={{paddingTop:10, fontSize: gridView ? 12 : 18, opacity: 0.7 }}
 						>
-							{item.status}
+							<Text style={{ fontWeight: "bold" }}>Species:</Text>{" "}
+							{item.species}
 						</Text>
-						<Text
-							numberOfLines={gridView ? 1 : null}
+						<View
 							style={{
-								fontSize: gridView ? 10 : 14,
-								opacity: 0.8,
-								color: "#0099cc",
+								flexDirection: "row",
+								justifyContent: "space-around",
+								alignItems: "center",
+								paddingTop:10
 							}}
 						>
-							{item.origin.name}
-						</Text>
+							<Image
+								style={{ tintColor: "red", height: 20, width: 20 }}
+								source={require("../../../assets/icons/location.png")}
+							/>
+							<Text
+								numberOfLines={1}
+								style={{
+									fontSize: gridView ? 10 : 14,
+									opacity: 0.8,
+									color: "#0099cc",
+								}}
+							>
+								{item.origin.name.includes('(')? item.origin.name.split('(')[0] : item.origin.name}
+							</Text>
+						</View>
 					</View>
-
-					<LottieView
-						style={{
-							height: 20,
-							alignSelf: "center",
-						}}
-						loop={true}
-						speed={0.5}
-						source={require("../../../assets/animations/down-arrow.json")}
-						autoPlay={true}
-					/>
 				</Animated.View>
 			) : (
 				<Animated.View
@@ -177,8 +181,8 @@ const ListItem = ({ item, gridView }) => {
 						>
 							<Image
 								style={{
-									height: gridView ? 20 : 30,
-									width: gridView ? 20 : 30,
+									height: 30,
+									width: 30,
 								}}
 								source={require("../../../assets/icons/like-icnon.png")}
 							/>
@@ -202,18 +206,26 @@ const ListItem = ({ item, gridView }) => {
 								<Text style={{ fontWeight: "bold" }}>Species:</Text>{" "}
 								{item.species}
 							</Text>
-							<View style={{ flexDirection: "row" ,justifyContent:'space-around', alignItems:'center'}}>
-								<Image style={{tintColor:'red', height:20, width:20}} source={require('../../../assets/icons/location.png')}/>
+							<View
+								style={{
+									flexDirection: "row",
+									justifyContent: "space-around",
+									alignItems: "center",
+								}}
+							>
+								<Image
+									style={{ tintColor: "red", height: 20, width: 20 }}
+									source={require("../../../assets/icons/location.png")}
+								/>
 								<Text
 									numberOfLines={1}
 									style={{
 										fontSize: gridView ? 10 : 14,
 										opacity: 0.8,
 										color: "#0099cc",
-										
 									}}
 								>
-									{item.origin.name}
+									{item.origin.name.includes('(')? item.origin.name.split('(')[0] : item.origin.name}
 								</Text>
 							</View>
 						</View>

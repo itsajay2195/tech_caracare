@@ -19,6 +19,7 @@ import { apiCall } from "../../services/moviesService";
 import { homeReducer } from "../../reducers/homeReducer";
 import ListItem from "./components/ListItem";
 import SwitchSelector from "./components/SwitchSelector";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const BG_IMG =
 	"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQI085rp63b7TRPEmAzAaPnahzOU1A_l9FhXg&usqp=CAU";
@@ -40,10 +41,20 @@ const Home = ({ navigation }) => {
 	const [state, dispatch] = useReducer(homeReducer, initialState);
 	const [searchText, setSearchText] = useState("");
 	const [nextPage, setNextPage] = useState(null);
-	const [gridView, setGridView] = useState(false);
+	const [gridView, setGridView] = useState(null);
 	const loadMore = useCallback(() => {
 		setNextPage(state.nextPageToken.split("=")[1]);
 	}, [state.nextPageToken]);
+
+	const storeUserViewPreference = useCallback(async (value)=>{
+	
+			try {
+			  await AsyncStorage.setItem('gridView', JSON.stringify(value))
+			} catch (e) {
+			  console.warn('error')
+			}
+		  
+	},[gridView])
 
 	useEffect(() => {
 		if (nextPage !== null) {
@@ -55,7 +66,19 @@ const Home = ({ navigation }) => {
 		navigation.setOptions({
 			title: 'Home',
 		});
-	}, [navigation]);
+		getUserViewPreference()
+	}, []);
+
+	const getUserViewPreference = async () => {
+		try {
+		  const value = await AsyncStorage.getItem('gridView')
+		  if(value !== null) {
+			setGridView(JSON.parse(value))
+		  }
+		} catch(e) {
+			console.log('getUserViewPreference error')
+		}
+	  }
 
 	const getData = useCallback(
 		(nextPageToken = "") => {
@@ -74,6 +97,7 @@ const Home = ({ navigation }) => {
 
 	const changeView= useCallback(()=>{
 		setGridView(!gridView)
+		storeUserViewPreference(!gridView)
 
 	},[gridView])
 
