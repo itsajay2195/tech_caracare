@@ -18,6 +18,7 @@ import React, {
 import { apiCall } from "../../services/moviesService";
 import { homeReducer } from "../../reducers/homeReducer";
 import ListItem from "./components/ListItem";
+import SwitchSelector from "./components/SwitchSelector";
 
 const BG_IMG =
 	"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQI085rp63b7TRPEmAzAaPnahzOU1A_l9FhXg&usqp=CAU";
@@ -53,18 +54,8 @@ const Home = ({ navigation }) => {
 	useLayoutEffect(() => {
 		navigation.setOptions({
 			title: '',
-			headerRight: () => (
-				<Switch
-					style={{ transform: [{ scaleX: 0.5 }, { scaleY: 0.5 }] }}
-					trackColor={{ false: "gray", true: "teal" }}
-					thumbColor="white"
-					ios_backgroundColor="gray"
-					onValueChange={(value) => setGridView(value)}
-					value={gridView}
-				/>
-			),
 		});
-	}, [gridView]);
+	}, [navigation]);
 
 	const getData = useCallback(
 		(nextPageToken = "") => {
@@ -80,11 +71,22 @@ const Home = ({ navigation }) => {
 	useEffect(() => {
 		getData();
 	}, []);
+
+	const changeView= useCallback(()=>{
+		setGridView(!gridView)
+
+	},[gridView])
+
+
 	const scrollY = React.useRef(new Animated.Value(0)).current;
 	return (
 		<>
+		<View style={{padding:SPACING -15,}}>
+			<SwitchSelector gridView={gridView} onPress={changeView}/>
+		</View>
+	
 			<View style={{ flex: 1 }}>
-		
+				
 				<Image
 					source={{ uri: BG_IMG }}
 					style={StyleSheet.absoluteFillObject}
