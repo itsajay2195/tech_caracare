@@ -5,9 +5,9 @@ import {
 	Animated,
 	Image,
 	Dimensions,
+	TouchableOpacity
 } from "react-native";
 import React, { useRef, useState, useCallback, useEffect } from "react";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import LottieView from "lottie-react-native";
 
 const SPACING = 20;
@@ -16,7 +16,7 @@ const BG_IMG =
 	"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQI085rp63b7TRPEmAzAaPnahzOU1A_l9FhXg&usqp=CAU";
 const { height, width } = Dimensions.get("screen");
 
-const ListItem = ({ item, gridView,setFavourites, }) => {
+const ListItem = ({ item, gridView,setFavourites,favouriteIds }) => {
 	const animationHeight = useRef(new Animated.Value(0)).current;
 	const [collapsed, setCollapsed] = useState(true);
 	let favourites = {}
@@ -61,6 +61,7 @@ const ListItem = ({ item, gridView,setFavourites, }) => {
 						marginBottom: SPACING,
 						shadowColor: "#000",
 						backgroundColor: "white",
+						elevation: 3,
 						borderRadius: 12,
 						// shadowOffset: {
 						// 	width: 0,
@@ -68,10 +69,10 @@ const ListItem = ({ item, gridView,setFavourites, }) => {
 						// },
 						shadowOpacity: 0.3,
 						shadowRadius: 20,
-						justifyContent: "center",
+						// justifyContent: "center",
 					}}
 				>
-					<TouchableOpacity style={{ position: "absolute" }} onPress={()=>{
+					<TouchableOpacity style={{ position: "absolute",top:10,left:5,right:0,bottom:0 }} onPress={()=>{
 						
 						setFavourites(item)
 						}}>
@@ -80,7 +81,7 @@ const ListItem = ({ item, gridView,setFavourites, }) => {
 								height: 20,
 								width: 20,
 							}}
-							source={require("../../../assets/icons/like-icnon.png")}
+							source={favouriteIds.includes(item.id) ? require("../../../assets/icons/like-fill-icon.png") :  require("../../../assets/icons/like-icnon.png")}
 						/>
 					</TouchableOpacity>
 					<View style={{ height: AVATAR_SIZE, alignItems: "center" }}>
@@ -98,6 +99,7 @@ const ListItem = ({ item, gridView,setFavourites, }) => {
 					<View
 						style={{ justifyContent: "center", alignItems: "center" }}
 					>
+							<Text>{item.id}</Text>
 							<Text
 								numberOfLines={1}
 								style={{paddingTop: 10, fontSize: gridView ? 14 : 22, fontWeight: "700" }}
@@ -164,6 +166,7 @@ const ListItem = ({ item, gridView,setFavourites, }) => {
 						backgroundColor: "white",
 						borderRadius: 12,
 						justifyContent: "space-between",
+						elevation: 3,
 						// shadowOffset: {
 						// 	width: 0,
 						// 	height: 10,
@@ -186,6 +189,7 @@ const ListItem = ({ item, gridView,setFavourites, }) => {
 						</View>
 
 						<View style={{ flex: 2, paddingLeft: gridView ? 5 : 10 }}>
+							<Text>{item.id}</Text>
 							<Text
 								numberOfLines={1}
 								style={{ fontSize: gridView ? 14 : 22, fontWeight: "700" }}
@@ -208,7 +212,7 @@ const ListItem = ({ item, gridView,setFavourites, }) => {
 									height: 30,
 									width: 30,
 								}}
-								source={require("../../../assets/icons/like-icnon.png")}
+								source={favouriteIds.includes(item.id) ? require("../../../assets/icons/like-fill-icon.png") :  require("../../../assets/icons/like-icnon.png")}
 							/>
 						</TouchableOpacity>
 					</View>

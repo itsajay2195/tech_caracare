@@ -41,7 +41,8 @@ const Home = ({ navigation }) => {
 	const [searchText, setSearchText] = useState('');
 	const [nextPage, setNextPage] = useState(null);
 	const [gridView, setGridView] = useState(null);
-	const [favourites,setFavourites] = useState(null)
+	const [favourites,setFavourites] = useState([])
+	const [favouritesIds,setFavouritesIds]= useState([])
 
 	const loadMore = () => {
 		setNextPage(state.nextPageToken.split("=")[1]);
@@ -111,14 +112,17 @@ const Home = ({ navigation }) => {
 
 	const getFavourites = async () => {
 		try {
-			const value = await AsyncStorage.getItem("favouritesList2");
-			console.warn('getfa',value)
-			if (value !== null) {
-				setFavourites(JSON.parse(value))
-				console.warn('get favourites success',value)
+			const favouriteValues = await AsyncStorage.getItem("fav6");
+			const favouriteIds = await AsyncStorage.getItem("favids6");
+			console.warn('getfa',favouriteValues)
+			if (favouriteValues !== null) {
+				setFavourites(JSON.parse(favouriteValues))
+				setFavouritesIds(JSON.parse(favouriteIds))
+				console.warn('get favourites success',favourites)
 			}else{
 				console.warn('it is actually null')
 				setFavourites([])
+				setFavouritesIds([])
 			}
 		} catch (e) {
 			console.warn("getFavourites error",e);
@@ -127,9 +131,38 @@ const Home = ({ navigation }) => {
 
 	const addToFavourites = async (value) => {
 		try {
-			setFavourites([...favourites,value])
-			console.warn(favourites)
-			await AsyncStorage.setItem("favouritesList2",JSON.stringify(favourites));
+		
+			if(favourites.length > 0){
+				let filter = []
+				let filteredIds =[]
+				favourites.map((item) =>{
+					if(item.id != value.id){
+						filter.push[item]
+						filteredIds.push[item.id]
+					} 
+
+				});
+	
+				console.warn('filter is',filteredIds)
+				let newData=  [...filter]
+				setFavourites(newData)
+				await AsyncStorage.setItem("fav6",JSON.stringify(newData));
+				setFavouritesIds(filteredIds);
+				await AsyncStorage.setItem("favids6", JSON.stringify(filteredIds));
+				
+			}	else{
+				let newData = [...favourites, value];
+				setFavourites(newData);
+				await AsyncStorage.setItem("fav6", JSON.stringify(newData));
+				let newIDs = [...favouritesIds, value.id];
+				setFavouritesIds(newIDs);
+				console.warn(newIDs);
+				await AsyncStorage.setItem("favids6", JSON.stringify(newIDs));
+				
+			
+
+			}
+			
 		} catch (e) {
 			console.log("error addToFavourites",e);
 		}
@@ -222,7 +255,7 @@ const Home = ({ navigation }) => {
 								return (
 									<>
 										{gridView && <View style={{ width: 3 }}></View>}
-										<ListItem item={item} gridView={gridView} setFavourites={addToFavourites}/>
+										<ListItem item={item} gridView={gridView} setFavourites={addToFavourites} favouriteIds={favouritesIds}/>
 										{gridView && <View style={{ width: 3 }}></View>}
 									</>
 								);

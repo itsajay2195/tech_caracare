@@ -1,7 +1,8 @@
-import { StyleSheet, Text, View } from "react-native";
-import React, { useEffect, useState } from "react";
+import { StyleSheet, Text, View , ScrollView} from "react-native";
+import React, { useEffect, useLayoutEffect,useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useIsFocused } from '@react-navigation/native';
+import ListItem from '../Home/components/ListItem'
 
 
 const Favourites = () => {
@@ -10,15 +11,15 @@ const Favourites = () => {
   const isFocused = useIsFocused();
 
 		const getFavourites = async () => {
-      console.warn('im caled in')
 			try {
 				setLoading(true);
-				const value = await AsyncStorage.getItem("favouritesList2");
+				const value = await AsyncStorage.getItem("fav6");
 				if (value !== null) {
+					console.warn('in fav',value)
 					setFavourites(JSON.parse(value));
 					// setFavourites('Hi')
 					setLoading(false);
-					console.warn("get favourites success", value);
+					console.warn("get favourites success from fav screen", favourites);
 				} else {
 					console.warn("it is actually null");
 					setFavourites([]);
@@ -30,16 +31,21 @@ const Favourites = () => {
 			}
 		};
 
-  useEffect(()=>{
+		useLayoutEffect(()=>{
     getFavourites()
   },[isFocused])
 
-	return <>{favourites.length > 0 && 
-    <>
-    {favourites.map(item=> <Text>{item.id}</Text>)}
+	return <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>{favourites.length > 0 && 
+    <ScrollView style={{flex:1}}>
+    {favourites.map(item=> (
+										
+							<ListItem item={item}  favouriteIds={[]}/>
+										
+	))
+	}
  
-  </>
-  }</>;
+  </ScrollView>
+  }</View>;
 };
 
 export default Favourites;
