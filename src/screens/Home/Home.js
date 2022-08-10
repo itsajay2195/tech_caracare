@@ -112,8 +112,8 @@ const Home = ({ navigation }) => {
 
 	const getFavourites = async () => {
 		try {
-			const favouriteValues = await AsyncStorage.getItem("fav6");
-			const favouriteIds = await AsyncStorage.getItem("favids6");
+			const favouriteValues = await AsyncStorage.getItem("fav9");
+			const favouriteIds = await AsyncStorage.getItem("favids9");
 			console.warn('getfa',favouriteValues)
 			if (favouriteValues !== null) {
 				setFavourites(JSON.parse(favouriteValues))
@@ -133,31 +133,49 @@ const Home = ({ navigation }) => {
 		try {
 		
 			if(favourites.length > 0){
-				let filter = []
-				let filteredIds =[]
-				favourites.map((item) =>{
-					if(item.id != value.id){
-						filter.push[item]
-						filteredIds.push[item.id]
-					} 
+				let filter 
+				let filteredIds 
+				let newData=[],newIds=[]
+				// favourites.map((item) =>{
+				// 	if(item.id != value.id){
+				// 		console.warn('inside map if',item)
+				// 		filter.push[item]
+				// 		filteredIds.push[item.id]
+				// 	} 
 
-				});
+				// });
+				// filter.push[value]
+				// filteredIds.push[value.id]
+				if (!favouritesIds.includes(parseInt(value.id))){
+					console.warn('inside if if')
+					 newData = [...favourites, value];
+					 newIds = [...favouritesIds,value.id]
+				}else{
+					
+					filter = favourites.filter(item => parseInt(item.id) !== parseInt(value.id))
+					filteredIds = favouritesIds.filter(item => item != value.id)
+					newData = [...filter];
+					newIds = [...filteredIds]
+					console.warn('inside if else',filteredIds)
+					console.warn('inside if else',filter)
+				}
 	
-				console.warn('filter is',filteredIds)
-				let newData=  [...filter]
+				console.warn('filter is')
+				
 				setFavourites(newData)
-				await AsyncStorage.setItem("fav6",JSON.stringify(newData));
-				setFavouritesIds(filteredIds);
-				await AsyncStorage.setItem("favids6", JSON.stringify(filteredIds));
+				await AsyncStorage.setItem("fav9",JSON.stringify(newData));
+			
+				setFavouritesIds(newIds);
+				await AsyncStorage.setItem("favids9", JSON.stringify(newIds));
 				
 			}	else{
 				let newData = [...favourites, value];
 				setFavourites(newData);
-				await AsyncStorage.setItem("fav6", JSON.stringify(newData));
+				await AsyncStorage.setItem("fav9", JSON.stringify(newData));
 				let newIDs = [...favouritesIds, value.id];
 				setFavouritesIds(newIDs);
 				console.warn(newIDs);
-				await AsyncStorage.setItem("favids6", JSON.stringify(newIDs));
+				await AsyncStorage.setItem("favids9", JSON.stringify(newIDs));
 				
 			
 
@@ -192,7 +210,7 @@ const Home = ({ navigation }) => {
 
 	return (
 		<>
-			<View style={{ padding: SPACING - 15 }}>
+			<View style={styles.SwitchSelectorWrapper}>
 				<SwitchSelector gridView={gridView} onPress={changeView} />
 			</View>
 
@@ -201,11 +219,7 @@ const Home = ({ navigation }) => {
 			</Animated.View>
 			{searchText.length > 0 && !state.isSearchResultNotFound > 0 && (
 				<View
-					style={{
-						flexDirection: "row",
-						justifyContent: "space-between",
-						paddingVertical: 20,
-					}}
+					style={styles.searchResultTextWrapper}
 				>
 					<Text style={{ color: "black" }}>Search Results</Text>
 					<Text style={{ color: "black" }}>
@@ -255,7 +269,7 @@ const Home = ({ navigation }) => {
 								return (
 									<>
 										{gridView && <View style={{ width: 3 }}></View>}
-										<ListItem item={item} gridView={gridView} setFavourites={addToFavourites} favouriteIds={favouritesIds}/>
+										<ListItem item={item} gridView={gridView} navigation={navigation} setFavourites={addToFavourites} favouriteIds={favouritesIds}/>
 										{gridView && <View style={{ width: 3 }}></View>}
 									</>
 								);
@@ -271,4 +285,11 @@ const Home = ({ navigation }) => {
 
 export default Home;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+	SwitchSelectorWrapper:{ padding: SPACING - 15 },
+	searchResultTextWrapper:{
+		flexDirection: "row",
+		justifyContent: "space-between",
+		paddingVertical: 20,
+	},
+});

@@ -1,11 +1,11 @@
-import { StyleSheet, Text, View , ScrollView} from "react-native";
+import { StyleSheet, FlatList, View , Text,TouchableOpacity} from "react-native";
 import React, { useEffect, useLayoutEffect,useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useIsFocused } from '@react-navigation/native';
 import ListItem from '../Home/components/ListItem'
 
 
-const Favourites = () => {
+const Favourites = ({navigation}) => {
 	const [favourites, setFavourites] = useState([]);
 	const [loading, setLoading] = useState();
   const isFocused = useIsFocused();
@@ -13,7 +13,7 @@ const Favourites = () => {
 		const getFavourites = async () => {
 			try {
 				setLoading(true);
-				const value = await AsyncStorage.getItem("fav6");
+				const value = await AsyncStorage.getItem("fav9");
 				if (value !== null) {
 					console.warn('in fav',value)
 					setFavourites(JSON.parse(value));
@@ -32,20 +32,36 @@ const Favourites = () => {
 		};
 
 		useLayoutEffect(()=>{
-    getFavourites()
+    			getFavourites()
   },[isFocused])
 
-	return <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>{favourites.length > 0 && 
-    <ScrollView style={{flex:1}}>
-    {favourites.map(item=> (
-										
-							<ListItem item={item}  favouriteIds={[]}/>
-										
-	))
-	}
- 
-  </ScrollView>
-  }</View>;
+	return <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+		{!favourites.length>0 &&(<View style={{flex:1,justifyContent:'center',alignContent:'center'}}>
+		
+			 <Text>No records to display</Text>
+		
+		</View>)}
+	
+		{favourites.length>0 &&<FlatList
+			data={favourites}
+			keyExtractor={(item, index) => {
+				return item.id;
+			}}
+			contentContainerStyle={{
+				alignItems: "center",
+				justifyContent: "space-between",
+				paddingTop: 5,
+			}}
+			renderItem={({item,index})=>{
+				return(
+					<ListItem item={item} navigation={navigation} favouriteIds={[]} isFavouritScreen={true}/>
+				)
+			}
+			
+		}
+		/>}
+
+  </View>;
 };
 
 export default Favourites;
