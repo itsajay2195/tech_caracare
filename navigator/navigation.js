@@ -13,9 +13,9 @@ const HomeStack = createStackNavigator();
 
 function HomeStackScreen() {
 	return (
-		<HomeStack.Navigator screenOptions={()=>({headerShown:false})}>
-			<HomeStack.Screen name="Home" component={Home} />
-			<HomeStack.Screen name="Details" component={DetailsScreen} />
+		<HomeStack.Navigator >
+			<HomeStack.Screen options={{headerShown:false}} name="Home" component={Home} />
+			<HomeStack.Screen options={{headerShown:false}} name="Details" component={DetailsScreen} />
 		</HomeStack.Navigator>
 	);
 }
@@ -36,6 +36,7 @@ export default function RootNavigation() {
 						headerShown: true,
 						headerStyle: { backgroundColor: theme.COLORS.primaryBgColor },
 						tabBarActiveTintColor:theme.COLORS.white,
+						headerTitle:'',
 						tabBarInactiveTintColor: "#3A4A4A",
 						tabBarStyle: {
 							height: 90,

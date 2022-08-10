@@ -27,7 +27,7 @@ const BG_IMG =
 //this is item Size(card size)
 const SPACING = 20;
 
-const Home = ({ navigation }) => {
+const Home = ({ navigation, route }) => {
 	const initialState = {
 		data: [],
 		filteredData: [],
@@ -81,9 +81,7 @@ const Home = ({ navigation }) => {
 	}, [nextPage]);
 
 	useLayoutEffect(() => {
-		navigation.setOptions({
-			title: "Home",
-		});
+	
 		const getUserViewPreference = async () => {
 			try {
 				const value = await AsyncStorage.getItem("gridView");
@@ -112,20 +110,20 @@ const Home = ({ navigation }) => {
 
 	const getFavourites = async () => {
 		try {
-			const favouriteValues = await AsyncStorage.getItem("fav9");
-			const favouriteIds = await AsyncStorage.getItem("favids9");
-			console.warn('getfa',favouriteValues)
+			const favouriteValues = await AsyncStorage.getItem("userFav");
+			const favouriteIds = await AsyncStorage.getItem("userFavIds");
+			// console.warn('getfa',favouriteValues)
 			if (favouriteValues !== null) {
 				setFavourites(JSON.parse(favouriteValues))
 				setFavouritesIds(JSON.parse(favouriteIds))
-				console.warn('get favourites success',favourites)
+				// console.warn('get favourites success',favourites)
 			}else{
-				console.warn('it is actually null')
+				// console.warn('it is actually null')
 				setFavourites([])
 				setFavouritesIds([])
 			}
 		} catch (e) {
-			console.warn("getFavourites error",e);
+			console.log("getFavourites error",e);
 		}
 	};
 
@@ -136,18 +134,8 @@ const Home = ({ navigation }) => {
 				let filter 
 				let filteredIds 
 				let newData=[],newIds=[]
-				// favourites.map((item) =>{
-				// 	if(item.id != value.id){
-				// 		console.warn('inside map if',item)
-				// 		filter.push[item]
-				// 		filteredIds.push[item.id]
-				// 	} 
-
-				// });
-				// filter.push[value]
-				// filteredIds.push[value.id]
 				if (!favouritesIds.includes(parseInt(value.id))){
-					console.warn('inside if if')
+					
 					 newData = [...favourites, value];
 					 newIds = [...favouritesIds,value.id]
 				}else{
@@ -156,26 +144,24 @@ const Home = ({ navigation }) => {
 					filteredIds = favouritesIds.filter(item => item != value.id)
 					newData = [...filter];
 					newIds = [...filteredIds]
-					console.warn('inside if else',filteredIds)
-					console.warn('inside if else',filter)
+				
 				}
 	
-				console.warn('filter is')
+				
 				
 				setFavourites(newData)
-				await AsyncStorage.setItem("fav9",JSON.stringify(newData));
-			
+				await AsyncStorage.setItem("userFav",JSON.stringify(newData));
 				setFavouritesIds(newIds);
-				await AsyncStorage.setItem("favids9", JSON.stringify(newIds));
+				await AsyncStorage.setItem("userFavIds", JSON.stringify(newIds));
 				
 			}	else{
 				let newData = [...favourites, value];
 				setFavourites(newData);
-				await AsyncStorage.setItem("fav9", JSON.stringify(newData));
+				await AsyncStorage.setItem("userFav", JSON.stringify(newData));
 				let newIDs = [...favouritesIds, value.id];
 				setFavouritesIds(newIDs);
-				console.warn(newIDs);
-				await AsyncStorage.setItem("favids9", JSON.stringify(newIDs));
+			
+				await AsyncStorage.setItem("userFavIds", JSON.stringify(newIDs));
 				
 			
 

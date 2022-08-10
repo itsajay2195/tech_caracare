@@ -1,24 +1,12 @@
-const logger = (arg1, arg2) => {
-	if (arg2) {
-		console.log(arg1, arg2);
-	} else {
-		console.log(arg1);
-	}
-};
-
 export const apiCall = async (
 	route,
 	body = {},
 	method = "GET",
-	customDomain = false,
-	customToken = null,
-	customHeader = {},
-	abortController = null
 ) => {
-    // let headerObject = {
-    //     'Content-Type': 'application/json',
-    //   }; ----> not required for this assignment, out of scope
-    // const headers = new Headers(headerObject);
+	// let headerObject = {
+	//     'Content-Type': 'application/json',
+	//   }; ----> not required for this assignment, out of scope
+	// const headers = new Headers(headerObject);
 	const requestURL = route;
 	const requestDetails = {
 		method,
@@ -27,10 +15,8 @@ export const apiCall = async (
 	};
 
 	const request = new Promise((resolve, reject) => {
-        
-		fetch(requestURL,requestDetails)
+		fetch(requestURL, requestDetails)
 			.then((data) => {
-                
 				// logger(data);
 				// logger(requestURL, JSON.stringify(data));
 				resolve(data);

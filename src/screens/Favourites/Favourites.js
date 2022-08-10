@@ -13,20 +13,20 @@ const Favourites = ({navigation}) => {
 		const getFavourites = async () => {
 			try {
 				setLoading(true);
-				const value = await AsyncStorage.getItem("fav9");
+				const value = await AsyncStorage.getItem("userFav");
 				if (value !== null) {
-					console.warn('in fav',value)
+					
 					setFavourites(JSON.parse(value));
 					// setFavourites('Hi')
 					setLoading(false);
-					console.warn("get favourites success from fav screen", favourites);
+					// console.warn("get favourites success from fav screen", favourites);
 				} else {
-					console.warn("it is actually null");
+					// console.warn("it is actually null");
 					setFavourites([]);
 					setLoading(!loading);
 				}
 			} catch (e) {
-				console.warn("getFavourites error", e);
+				console.log("getFavourites error", e);
 				setLoading(!loading);
 			}
 		};
