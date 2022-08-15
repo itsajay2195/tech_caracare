@@ -1,4 +1,4 @@
-import { StyleSheet, FlatList, View , Text,TouchableOpacity} from "react-native";
+import { StyleSheet, FlatList, View , Text, Image} from "react-native";
 import React, { useEffect, useLayoutEffect,useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useIsFocused } from '@react-navigation/native';
@@ -9,6 +9,8 @@ const Favourites = ({navigation}) => {
 	const [favourites, setFavourites] = useState([]);
 	const [loading, setLoading] = useState();
   const isFocused = useIsFocused();
+  const BG_IMG =
+	"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQI085rp63b7TRPEmAzAaPnahzOU1A_l9FhXg&usqp=CAU";
 
 		const getFavourites = async () => {
 			try {
@@ -35,22 +37,29 @@ const Favourites = ({navigation}) => {
     			getFavourites()
   },[isFocused])
 
-	return <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-		{!favourites.length>0 &&(<View style={{flex:1,justifyContent:'center',alignContent:'center'}}>
+	return <View style={styles.container}>
+		{!favourites.length>0 &&(<View style={styles.container}>
 		
 			 <Text>No records to display</Text>
 		
 		</View>)}
 	
-		{favourites.length>0 &&<FlatList
+		{favourites.length>0 &&
+		<>
+					<Image
+					source={{ uri: BG_IMG }}
+					style={StyleSheet.absoluteFillObject}
+					blurRadius={0}
+				/>
+		
+		<FlatList
 			data={favourites}
 			keyExtractor={(item, index) => {
 				return item.id;
 			}}
 			contentContainerStyle={{
 				alignItems: "center",
-				justifyContent: "space-between",
-				paddingTop: 5,
+				paddingBottom:80,
 			}}
 			renderItem={({item,index})=>{
 				return(
@@ -59,11 +68,15 @@ const Favourites = ({navigation}) => {
 			}
 			
 		}
-		/>}
+		/>
+		
+	</>}
 
   </View>;
 };
 
 export default Favourites;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+	container:{flex:1,justifyContent:'center',alignItems:'center'}
+});
