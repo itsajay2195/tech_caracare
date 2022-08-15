@@ -5,7 +5,7 @@ import {
 	Alert,
 	Image,
 	Animated,
-	TouchableOpacity,
+	ActivityIndicator
 } from "react-native";
 import React, {
 	useState,
@@ -13,7 +13,7 @@ import React, {
 	useReducer,
 	useCallback,
 	useLayoutEffect,
-	useRef,
+
 } from "react";
 import { apiCall } from "../../services/moviesService";
 import { homeReducer } from "../../reducers/homeReducer";
@@ -21,6 +21,7 @@ import ListItem from "./components/ListItem";
 import SwitchSelector from "./components/SwitchSelector";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import SearchBar from "./components/SearchBar";
+import { theme } from "../../constants";
 
 const BG_IMG =
 	"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQI085rp63b7TRPEmAzAaPnahzOU1A_l9FhXg&usqp=CAU";
@@ -219,7 +220,7 @@ const Home = ({ navigation, route }) => {
 					style={StyleSheet.absoluteFillObject}
 					blurRadius={0}
 				/>
-
+			{state.isLoading ? (<ActivityIndicator size={"large"} color={theme.COLORS.primaryBgColor}/>): (
 				<View style={{ flex: 1 }}>
 					{state.isSearchResultNotFound ? (
 						<Text style={{ color: "red" }}> No results found</Text>
@@ -263,7 +264,7 @@ const Home = ({ navigation, route }) => {
 							// columnWrapperStyle={{justifyContent: 'space-evenly' }}
 						/>
 					)}
-				</View>
+				</View>)}
 			</View>
 		</>
 	);

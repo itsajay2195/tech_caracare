@@ -3,11 +3,12 @@ import { NavigationContainer } from "@react-navigation/native";
 import { KeyboardAvoidingView, Platform } from "react-native";
 import Home from "../src/screens/Home/Home";
 import Favourites from "../src/screens/Favourites/Favourites";
-import { CustomTab } from "../src/assets/animations";
-import React, { useState } from "react";
+import { CustomTab } from "../src/assets/animations/CustomTab";
+import React from "react";
 import DetailsScreen from "../src/screens/Details/DetailsScreen";
 import { createStackNavigator } from "@react-navigation/stack";
 import { theme } from "../src/constants";
+
 const Tab = createBottomTabNavigator();
 const HomeStack = createStackNavigator();
 
